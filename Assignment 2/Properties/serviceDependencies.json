@@ -1,15 +1,12 @@
 {
   "dependencies": {
-    "secrets1": {
-      "type": "secrets"
+    "storage1": {
+      "type": "storage",
+      "connectionId": "ConnectionStrings:AzureBlobStorage"
     },
     "mssql1": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:DefaultConnection"
-    },
-    "storage1": {
-      "type": "storage",
-      "connectionId": "ConnectionStrings:AzureBlobStorage"
     }
   }
 }

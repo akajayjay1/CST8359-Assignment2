@@ -1,17 +1,15 @@
+using System;
+using Azure.Storage.Blobs;
+using Azure.Storage.Queues;
+using Azure.Core.Extensions;
+using Microsoft.Extensions.Azure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Azure;
-using Azure.Storage.Queues;
-using Azure.Storage.Blobs;
-using Azure.Core.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Assignment_2.Data;
 
 namespace Assignment_2
 {
@@ -26,6 +24,12 @@ namespace Assignment_2
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<SchoolCommunityContext>(options => options.UseSqlServer(connection));
+            var storageConnection = Configuration.GetConnectionString("AzureBlobStorage");
+            services.AddSingleton(new BlobServiceClient(storageConnection));
+            services.AddControllersWithViews();
             services.AddAzureClients(builder =>
            {
                builder.AddBlobServiceClient(Configuration["ConnectionStrings:AzureBlobStorage:blob"], preferMsi: true);
@@ -40,15 +44,18 @@ namespace Assignment_2
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

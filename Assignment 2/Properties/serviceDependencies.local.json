@@ -1,8 +1,5 @@
 {
   "dependencies": {
-    "secrets1": {
-      "type": "secrets.user"
-    },
     "mssql1": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/cst8359-net-server/databases/CST8359 .NET Enterprise Appl. Dev Database",
       "type": "mssql.azure",
